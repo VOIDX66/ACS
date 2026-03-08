@@ -33,7 +33,21 @@ Empresa global procesa pagos con:
 **Preguntas de reflexión**
 
 - ¿Qué ventaja tiene encadenar validaciones?
+
+  > La ventaja de encadenarlas esta en que podemos añadir o quitar validaciones sin tocar codigo de los procesadores, si la validación falla la cadena se corta inmediatamente.
+
 - ¿Cómo evitar múltiples if por país?
+
+  > Se instancian los procesadores por pais por medio de una fabrica, la cual retorna los procesadores bajo una interfaz comun, lo que permite ser consumidos sin necesidad de switch o multiples if
+
 - ¿Qué parte del algoritmo debe ser invariable?
+
+  > El Metodo Process el cual define el orden obligaorio Validar Seguridad, Convertir Moneda, Calcular Comisiones y Ejecutar la Transaccion
+
 - ¿Cómo escalar a nuevos países?
+
+  > Gracias a PaymentProcessor simplemente debemos crear una nueva clase que la herede, y se registra la nueva clase en el switch de la Factory
+
 - ¿Qué patrón reduce duplicación de lógica?
+
+  > Con el Template Method la logica en comun vive en una sola clase, sin ese patron tendriamos que poner la misma logica en cada procesador.
