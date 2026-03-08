@@ -34,7 +34,12 @@ Debe manejar:
 **Preguntas de reflexión**
 
 - ¿Qué problemas genera usar múltiples condicionales para estados?
+  > Si la cantidad de estados creciera, las condicionales tambien lo harian, lo cual seria insostenible y al añadir un estado nuevo se tendria que re testear todos los metodos de Reservation
 - ¿Cómo facilita Builder la creación de reservas complejas?
+  > Nos permite crear reservas sin necesidad de un solo constructor con muchos parametros opcionales, ademas agrega una capa de validacion minima antes de instanciar, tales como son que haya un pasajero y una estrategia de precio
 - ¿Qué ocurre si cambian las reglas de precio?
+  > El impacto es nulo en el sistema, solo hay que instanciar bajo la interfaz IPricingStrategy y crear la nueva estrategia con la logica de negocio requerida
 - ¿Cómo desacoplar notificaciones?
+  > Las notificaciones implementan el patron Observer bajo la interfaz IReservationObserver por lo que no depende de implementaciones concretas para funcionar si no en base a la interfaz, lo que nos permite agregar canales de notificacion en tiempo de ejecución
 - ¿Qué patrón mejora cohesión en cambios de estado?
+  > El Patron State, al mover el comportamiento especifico de cada estado a una clase independiente, podemos centrarnos en que este componente este netamente enfocado en la logica de transiccion.
