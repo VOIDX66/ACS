@@ -32,3 +32,6 @@ artifacts/
 # OS
 .DS_Store
 Thumbs.db
+
+# NOTAS
+NOTAS.MD
