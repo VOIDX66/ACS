@@ -33,7 +33,12 @@ Empresa quiere:
 **Preguntas de reflexión**
 
 - ¿Cómo permitir nuevos algoritmos?
+  > Atraves de AlgorithFactory podemos agregar nuevos algoritmos creados bajo la interfaz de IRecommendationStrategy
 - ¿Qué ventaja ofrece Decorator?
+  > Nos permite añadir comportamientos como el Logging y el Cache de forma dinamica
 - ¿Por qué usar Chain of Responsibility?
+  > Porque nos permite añadir/quitar/reordenar filtros sin modificar el motor de recomendaciones
 - ¿Qué problema resuelve Singleton?
+  > Permite que todo sea bajo una unica instancia global para manterner la consistencia en tiempo de ejecucion
 - ¿Cómo impacta en rendimiento y mantenimiento?
+  > El cache impacta de manera sumamente positiva el uso de RED/CPU. Por otro lado el mantenimiento es sumamente sencillo ya que al ser un sistema desacoplado todo se puede separar o cambiar

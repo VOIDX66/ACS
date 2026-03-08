@@ -4,86 +4,109 @@
 classDiagram
     direction TB
 
-    namespace Reservations_Feature {
-        class Reservation {
-            +string PassengerName
-            +string FlightNumber
-            +string SeatNumber
-            +decimal BasePrice
-            -IReservationState _currentState
-            -IPricingStrategy _pricingStrategy
-            -List~IReservationObserver~ _observers
-            +TransitionTo(IReservationState)
-            +GetTotal() decimal
-            +Confirmar()
-            +Cancelar()
-            +RealizarCheckIn()
-            +Subscribe(IReservationObserver)
+    namespace Core_Engine_Facade {
+        class RecommendationFacade {
+            -IProductRepository _repository
+            +GetRecommendations(userId) List~Product~
         }
-
-        class ReservationBuilder {
-            -Reservation _reservation
-            +ConPasajero(name, passport)
-            +ParaVuelo(flight, seat)
-            +ConPrecioBase(price, strategy)
-            +AgregarServicioExtra(service)
-            +Build() Reservation
-        }
-    }
-
-    namespace Lifecycle_State {
-        class IReservationState {
+        class IRecommendationStrategy {
             <<interface>>
-            +Confirmar(Reservation)
-            +Cancelar(Reservation)
-            +RealizarCheckIn(Reservation)
+            +Recommend(userId, allProducts) List~Product~
         }
-        class PendingState
-        class ConfirmedState
-        class CancelledState
     }
 
-    namespace Pricing_Strategy {
-        class IPricingStrategy {
+    namespace Catalog_Repository {
+        class IProductRepository {
             <<interface>>
-            +Calculate(decimal) decimal
+            +GetAll() List~Product~
         }
-        class EconomyPricing
-        class PremiumPricing
+        class SqlProductRepository {
+            +GetAll() List~Product~
+        }
+        class Product {
+            +int Id
+            +string Name
+            +string Category
+            +bool InStock
+        }
     }
 
-    namespace Notifications_Observer {
-        class IReservationObserver {
+    namespace Algorithms_Strategy {
+        class AlgorithmFactory {
+            <<static>>
+            +CreateDefault() IRecommendationStrategy
+        }
+        class CollaborativeFiltering
+        class ContentBasedFiltering
+    }
+
+    namespace External_Adapter {
+        class IExternalPredictor {
             <<interface>>
-            +Update(Reservation, string)
+            +GetExternalPredictions(userId) string[]
         }
-        class EmailNotifier
-        class AppNotifier
+        class AmazonMLAdapter {
+            -IExternalPredictor _amazonService
+            +Recommend(userId, allProducts) List~Product~
+        }
     }
 
-    %% Relaciones de Construcción
-    ReservationBuilder ..> Reservation : Instancia y Configura
+    namespace Middleware_Decorator {
+        class LoggingDecorator {
+            -IRecommendationStrategy _inner
+            +Recommend(userId, allProducts) List~Product~
+        }
+        class CacheDecorator {
+            -IRecommendationStrategy _inner
+            -static Dictionary _cache
+            +Recommend(userId, allProducts) List~Product~
+        }
+    }
 
-    %% Relaciones de Estado
-    Reservation o-- IReservationState : Posee
-    IReservationState <|.. PendingState
-    IReservationState <|.. ConfirmedState
-    IReservationState <|.. CancelledState
+    namespace PostProcessing_Chain {
+        class IRecommendationFilter {
+            <<interface>>
+            +SetNext(next) IRecommendationFilter
+            +Filter(products, userId) List~Product~
+        }
+        class BaseFilter {
+            <<abstract>>
+            -IRecommendationFilter _next
+        }
+        class StockFilter
+        class BlacklistFilter
+    }
+
+    %% Relaciones de Fachada y Datos
+    RecommendationFacade --> IProductRepository : Inyecta
+    RecommendationFacade ..> AlgorithmFactory : Obtiene Strategy
+    IProductRepository <|.. SqlProductRepository
+    SqlProductRepository ..> Product : Devuelve
 
     %% Relaciones de Estrategia
-    Reservation o-- IPricingStrategy : Usa
-    IPricingStrategy <|.. EconomyPricing
-    IPricingStrategy <|.. PremiumPricing
+    IRecommendationStrategy <|.. CollaborativeFiltering
+    IRecommendationStrategy <|.. ContentBasedFiltering
+    IRecommendationStrategy <|.. AmazonMLAdapter
+    AmazonMLAdapter --> IExternalPredictor : Adapta
 
-    %% Relaciones de Observación
-    Reservation o-- IReservationObserver : Notifica
-    IReservationObserver <|.. EmailNotifier
-    IReservationObserver <|.. AppNotifier
+    %% Relaciones de Decoración
+    IRecommendationStrategy <|.. LoggingDecorator
+    IRecommendationStrategy <|.. CacheDecorator
+    LoggingDecorator o-- IRecommendationStrategy : Envuelve
+    CacheDecorator o-- IRecommendationStrategy : Envuelve
+
+    %% Relaciones de Cadena
+    IRecommendationFilter <|.. BaseFilter
+    BaseFilter <|-- StockFilter
+    BaseFilter <|-- BlacklistFilter
+    RecommendationFacade ..> IRecommendationFilter : Ejecuta Pipeline
 
     %% Estilos Profesionales
-    style Reservation fill:#1a237e,stroke:#3949ab,color:#fff
-    style ReservationBuilder fill:#2c3e50,stroke:#546e7a,color:#fff
-    style IReservationState fill:#4a148c,stroke:#7b1fa2,color:#fff
-    style IPricingStrategy fill:#1b4d3e,stroke:#2e7d32,color:#fff
-    style IReservationObserver fill:#e65100,stroke:#ef6c00,color:#fff
+    style RecommendationFacade fill:#1a237e,stroke:#3949ab,color:#fff
+    style IRecommendationStrategy fill:#4a148c,stroke:#7b1fa2,color:#fff
+    style IProductRepository fill:#1b4d3e,stroke:#2e7d32,color:#fff
+    style IRecommendationFilter fill:#e65100,stroke:#ef6c00,color:#fff
+    style IExternalPredictor fill:#b71c1c,stroke:#d32f2f,color:#fff
+    style LoggingDecorator fill:#2c3e50,stroke:#546e7a,color:#fff
+    style CacheDecorator fill:#2c3e50,stroke:#546e7a,color:#fff
 ```
