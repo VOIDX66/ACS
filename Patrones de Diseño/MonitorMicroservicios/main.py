@@ -9,10 +9,10 @@ from rich.console import Console
 from rich.panel import Panel
 from rich.rule import Rule
 
-from config import MonitoringConfig
-from facade import MonitoringFacade
-from observers import EmailAlert, SlackAlert, PagerDutyAlert
-from adapters import LegacyMonitoringAPI, LegacyAPIAdapter, CloudWatchAPI, CloudWatchAdapter, InternalMetricsProvider
+from infrastructure.config import MonitoringConfig
+from presentation.facade import MonitoringFacade
+from infrastructure.observers import EmailAlert, SlackAlert, PagerDutyAlert
+from infrastructure.adapters import LegacyMonitoringAPI, LegacyAPIAdapter, CloudWatchAPI, CloudWatchAdapter, InternalMetricsProvider
 
 console = Console()
 

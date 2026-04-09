@@ -1,12 +1,11 @@
 """
 =============================================================
- MONITOR DE MICROSERVICIO
+ APPLICATION LAYER - USE CASES
 =============================================================
 """
-
-from observers import AlertSubject
-from config import MonitoringConfig
-from adapters import MetricsProvider, MetricsSnapshot
+from domain.entities import AlertSubject, MetricsSnapshot
+from domain.interfaces import MetricsProvider
+from infrastructure.config import MonitoringConfig
 
 
 class MicroserviceMonitor(AlertSubject):

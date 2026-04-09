@@ -12,10 +12,9 @@ from rich.table import Table
 from rich.panel import Panel
 from rich import box
 
-from config import MonitoringConfig
-from monitor import MicroserviceMonitor
-from observers import AlertObserver
-from adapters import MetricsProvider
+from infrastructure.config import MonitoringConfig
+from application.use_cases import MicroserviceMonitor
+from domain.interfaces import AlertObserver, MetricsProvider
 
 console = Console()
 

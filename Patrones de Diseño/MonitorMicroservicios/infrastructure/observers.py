@@ -4,22 +4,11 @@
 =============================================================
 """
 
-from abc import ABC, abstractmethod
-from typing import List
-
 from rich.console import Console
 
+from domain.interfaces import AlertObserver
+
 console = Console()
-
-
-class AlertObserver(ABC):
-    """Interfaz que deben implementar todos los canales de alerta."""
-    @abstractmethod
-    def alert(self, service: str, metric: str, value: float, threshold: float) -> None: ...
-
-    @property
-    @abstractmethod
-    def channel_name(self) -> str: ...
 
 
 class EmailAlert(AlertObserver):
@@ -69,19 +58,3 @@ class PagerDutyAlert(AlertObserver):
             f"INCIDENTE: [bold]{service}[/bold] {metric}={value:.1f} > {threshold} "
             f"[blink][red]CRITICO[/red][/blink]"
         )
-
-
-class AlertSubject:
-    """Sujeto observable. Gestiona suscriptores y dispara alertas."""
-    def __init__(self):
-        self._observers: List[AlertObserver] = []
-
-    def subscribe(self, observer: AlertObserver) -> None:
-        self._observers.append(observer)
-
-    def unsubscribe(self, observer: AlertObserver) -> None:
-        self._observers.remove(observer)
-
-    def _notify_all(self, service: str, metric: str, value: float, threshold: float) -> None:
-        for obs in self._observers:
-            obs.alert(service, metric, value, threshold)

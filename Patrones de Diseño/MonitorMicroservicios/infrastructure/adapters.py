@@ -4,32 +4,11 @@
 =============================================================
 """
 
-from abc import ABC, abstractmethod
 from typing import Dict, Any
 import random
-import datetime
 
-
-class MetricsSnapshot:
-    """Formato interno uniforme de metricas."""
-    def __init__(
-        self,
-        cpu_usage: float,
-        memory_usage: float,
-        latency_ms: float,
-        error_rate: float,
-    ):
-        self.cpu_usage    = cpu_usage
-        self.memory_usage = memory_usage
-        self.latency_ms   = latency_ms
-        self.error_rate   = error_rate
-        self.timestamp    = datetime.datetime.now()
-
-
-class MetricsProvider(ABC):
-    """Target: interfaz que el sistema interno espera."""
-    @abstractmethod
-    def get_metrics(self) -> MetricsSnapshot: ...
+from domain.entities import MetricsSnapshot
+from domain.interfaces import MetricsProvider
 
 
 # ── API legada con formato heterogeneo ──────────────────────
