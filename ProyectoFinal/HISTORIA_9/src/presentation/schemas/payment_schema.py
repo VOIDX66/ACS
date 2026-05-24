@@ -14,6 +14,7 @@ class PaymentCreate(BaseModel):
     amount: float
     currency: str = "USD"
     method_type: MethodTypeEnum = MethodTypeEnum.CARD
+    priority: int = 0
 
 
 class PaymentResponse(BaseModel):

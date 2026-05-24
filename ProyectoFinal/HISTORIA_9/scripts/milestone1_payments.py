@@ -113,9 +113,9 @@ def run_milestone1():
 def _produce(pid: int, request: PaymentRequest, queue):
     queue.enqueue(request)
     console.log(
-        f"[producer]Productor {pid}[/] encolando: "
+        f"[producer]Productor {pid}[/] Encolando pago de "
         f"merchant [merchant]{request.merchant_id}[/] "
-        f"[amount]{request.display_amount}[/]"
+        f"por [amount]{request.display_amount}[/]"
     )
 
 

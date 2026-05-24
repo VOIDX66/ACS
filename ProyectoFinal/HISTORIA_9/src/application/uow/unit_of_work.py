@@ -35,3 +35,7 @@ class UnitOfWork:
             raise
         finally:
             session.close()
+
+
+def get_uow():
+    return UnitOfWork()

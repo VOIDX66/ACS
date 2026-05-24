@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from src.core.database import get_db
+from src.application.uow.unit_of_work import UnitOfWork, get_uow
 from src.presentation.schemas.auth_schema import UserRegister, UserLogin, UserResponse, TokenResponse
 from src.application.services.auth_service import AuthService
 
@@ -9,11 +10,12 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 
 
 @router.post("/register", response_model=UserResponse, status_code=201)
-def register(body: UserRegister, db: Session = Depends(get_db)):
+def register(body: UserRegister, uow: UnitOfWork = Depends(get_uow)):
     try:
-        service = AuthService(db)
-        result = service.register(body.email, body.password, body.full_name)
-        return result
+        with uow.begin() as db:
+            service = AuthService(db)
+            result = service.register(body.email, body.password, body.full_name)
+            return result
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 

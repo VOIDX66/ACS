@@ -22,6 +22,7 @@ def submit_batch(
             amount=p.amount,
             currency=p.currency,
             method_type=MethodType(p.method_type.value),
+            priority=p.priority,
         )
         for p in body
     ]

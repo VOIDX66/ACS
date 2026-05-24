@@ -6,6 +6,8 @@ from src.core.console import console
 from src.presentation.api.auth_routes import router as auth_router
 from src.presentation.api.job_routes import router as job_router
 from src.presentation.api.payment_routes import router as payment_router
+from src.presentation.api.report_routes import router as report_router
+from src.presentation.websocket.routes import router as ws_router
 
 
 def create_app() -> FastAPI:
@@ -26,6 +28,8 @@ def create_app() -> FastAPI:
     app.include_router(auth_router)
     app.include_router(job_router)
     app.include_router(payment_router)
+    app.include_router(report_router)
+    app.include_router(ws_router)
 
     @app.on_event("startup")
     def on_startup():

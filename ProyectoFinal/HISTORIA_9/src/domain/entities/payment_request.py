@@ -23,6 +23,7 @@ class PaymentRequest:
     currency: str
     method_type: MethodType
     request_id: str = field(default_factory=lambda: uuid4().hex[:8])
+    priority: int = 0
     status: PaymentStatus = PaymentStatus.PENDING
     commission: float = 0.0
     final_amount: float = 0.0

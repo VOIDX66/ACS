@@ -39,7 +39,7 @@ class PaymentService:
         self._pool.queue.enqueue(request)
         metrics.increment("payments_enqueued")
         console.log(
-            f"[producer]Productor {producer_id}[/] encolando pago de "
+            f"[producer]Productor {producer_id}[/] Encolando pago de "
             f"merchant [merchant]{request.merchant_id}[/] "
             f"por [amount]{request.display_amount}[/]"
         )

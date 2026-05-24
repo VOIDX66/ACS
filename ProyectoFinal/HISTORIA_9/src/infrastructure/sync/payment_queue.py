@@ -1,5 +1,6 @@
+import itertools
 import threading
-from queue import Queue, Empty, Full
+from queue import Queue, PriorityQueue, Empty, Full
 
 from src.core.config import settings
 from src.core.console import console
@@ -16,11 +17,22 @@ class PaymentQueue:
                 if cls._instance is None:
                     cls._instance = super().__new__(cls)
                     cls._instance._q = Queue(maxsize=settings.QUEUE_MAX_SIZE)
+                    cls._instance._use_priority = False
+                    cls._instance._counter = itertools.count()
         return cls._instance
+
+    def enable_priority(self) -> None:
+        if not self._use_priority and self._q.empty():
+            self._q = PriorityQueue(maxsize=settings.QUEUE_MAX_SIZE)
+            self._use_priority = True
 
     def enqueue(self, request: PaymentRequest) -> bool:
         try:
-            self._q.put(request, block=True, timeout=5)
+            if self._use_priority:
+                item = (-request.priority, next(self._counter), request)
+            else:
+                item = request
+            self._q.put(item, block=True, timeout=5)
             return True
         except Full:
             console.log("[error]Cola llena, no se pudo encolar[/]")
@@ -28,7 +40,11 @@ class PaymentQueue:
 
     def dequeue(self, timeout: float = 2.0) -> PaymentRequest | None:
         try:
-            return self._q.get(block=True, timeout=timeout)
+            item = self._q.get(block=True, timeout=timeout)
+            if self._use_priority:
+                _, _, request = item
+                return request
+            return item
         except Empty:
             return None
 
